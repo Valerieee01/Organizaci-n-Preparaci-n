@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi ruta de aprendizaje · PO + Backend/Arquitectura</title>
+<style>
+/* =========================================================
+   Tokens — cada color pastel tiene un significado fijo:
+   morado = Ruta A (PO)      azul   = Ruta B (Dev)
+   rosa   = Semana 3.5 (QA)  amarillo = entregable
+   verde  = completado
+   ========================================================= */
+:root{
+  --bg:#fdfaff;
+  --surface:#ffffff;
+  --surface-2:#f9f6fd;
+  --border:#f0eaf8;
+  --border-strong:#e0d6f0;
+  --text:#453a58;
+  --muted:#8e85a3;
+
+  --purple:#cbbcf2; --purple-bg:#f9f5ff; --purple-bd:#eae1fc; --purple-ink:#6f5cb0;
+  --blue:#aed0f4;   --blue-bg:#f2f8ff;   --blue-bd:#dbebfc;   --blue-ink:#4a80ae;
+  --pink:#f7c0d8;   --pink-bg:#fff5fa;   --pink-bd:#fbe0ed;   --pink-ink:#ad6287;
+  --green:#aedfc2;  --green-bg:#f3fcf7;  --green-bd:#d9f0e3;  --green-ink:#4a8f69;
+  --yellow:#f9e3aa; --yellow-bg:#fffcee; --yellow-bd:#f9eed0; --yellow-ink:#96792f;
+
+  --shadow:0 1px 2px rgba(130,110,175,.04), 0 8px 24px rgba(130,110,175,.07);
+  --radius:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16121e;
+    --surface:#1d1828;
+    --surface-2:#241f30;
+    --border:#2e2740;
+    --border-strong:#443b5c;
+    --text:#eee9f6;
+    --muted:#a89ec0;
+
+    --purple:#cbbcf2; --purple-bg:rgba(203,188,242,.13); --purple-bd:rgba(203,188,242,.3); --purple-ink:#ded2fb;
+    --blue:#aed0f4;   --blue-bg:rgba(174,208,244,.13);   --blue-bd:rgba(174,208,244,.3);   --blue-ink:#d0e5fb;
+    --pink:#f7c0d8;   --pink-bg:rgba(247,192,216,.13);   --pink-bd:rgba(247,192,216,.3);   --pink-ink:#fbd9e9;
+    --green:#aedfc2;  --green-bg:rgba(174,223,194,.13);  --green-bd:rgba(174,223,194,.3);  --green-ink:#d2efdf;
+    --yellow:#f9e3aa; --yellow-bg:rgba(249,227,170,.13); --yellow-bd:rgba(249,227,170,.3); --yellow-ink:#fbeecb;
+
+    --shadow:0 1px 2px rgba(0,0,0,.28), 0 8px 24px rgba(0,0,0,.22);
+  }
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+@media (prefers-color-scheme: light){
+  body{background:linear-gradient(170deg,#fdf7ff 0%,#f4faff 45%,#fff8fc 100%);background-attachment:fixed}
+}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3,h4{margin:0;line-height:1.25;font-weight:660}
+.wrap{max-width:1140px;margin:0 auto;padding:0 16px 60px}
+
+/* ---------- Header ---------- */
+.top{position:sticky;top:0;z-index:30;background:var(--bg)}
+@supports (backdrop-filter:blur(1px)){
+  .top{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px) saturate(1.5)}
+}
+.top-inner{max-width:1140px;margin:0 auto;padding:14px 16px 0}
+.title-row{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;justify-content:space-between}
+h1{font-size:19px;letter-spacing:-.015em}
+.sub{color:var(--muted);font-size:13px;margin-top:3px}
+.rainbow{height:3px;background:linear-gradient(90deg,
+  var(--purple) 0%,var(--purple) 25%,var(--blue) 25%,var(--blue) 50%,
+  var(--pink) 50%,var(--pink) 68%,var(--yellow) 68%,var(--yellow) 84%,
+  var(--green) 84%,var(--green) 100%);}
+
+.metrics{display:flex;gap:16px;flex-wrap:wrap}
+.metric{min-width:132px}
+.metric-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.metric-top b{font-size:12.5px;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:0}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.bar span{display:block;height:100%;width:0;border-radius:99px;transition:width .35s ease}
+.bar.pa span{background:var(--purple)}
+.bar.pb span{background:var(--blue)}
+.bar.pt span{background:var(--green)}
+
+.tabs{display:flex;gap:6px;margin-top:16px}
+.tab{background:none;border:1px solid transparent;border-bottom:none;
+  padding:9px 16px;font-size:14px;font-weight:640;color:var(--muted);border-radius:10px 10px 0 0}
+.tab[aria-selected="true"]{color:var(--text);background:var(--surface);
+  border-color:var(--border);box-shadow:0 -2px 0 var(--purple) inset}
+.tab:hover{color:var(--text)}
+
+/* ---------- Ayuda / leyenda ---------- */
+.ayuda{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 14px;margin:20px 0 14px;font-size:13px;color:var(--muted);line-height:1.5;
+}
+.ayuda b{color:var(--text)}
+.ayuda .ico{font-size:15px;line-height:1.3}
+
+.legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.key{
+  display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;
+  padding:5px 11px 5px 8px;border-radius:99px;border:1px solid var(--border);background:var(--surface);
+}
+.key i{width:12px;height:12px;border-radius:4px;flex:none}
+.k-purple i{background:var(--purple)} .k-purple{color:var(--purple-ink);border-color:var(--purple-bd);background:var(--purple-bg)}
+.k-blue i{background:var(--blue)}     .k-blue{color:var(--blue-ink);border-color:var(--blue-bd);background:var(--blue-bg)}
+.k-pink i{background:var(--pink)}     .k-pink{color:var(--pink-ink);border-color:var(--pink-bd);background:var(--pink-bg)}
+.k-yellow i{background:var(--yellow)} .k-yellow{color:var(--yellow-ink);border-color:var(--yellow-bd);background:var(--yellow-bg)}
+.k-green i{background:var(--green)}   .k-green{color:var(--green-ink);border-color:var(--green-bd);background:var(--green-bg)}
+.legend .spacer{flex:1;min-width:0}
+.ghost-btn{background:var(--surface);border:1px solid var(--border);border-radius:9px;
+  padding:6px 11px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.ghost-btn:hover{border-color:var(--border-strong);color:var(--text)}
+
+/* ---------- Cabecera de carriles ---------- */
+.lanes-head{display:grid;grid-template-columns:1fr 84px 1fr;gap:14px;margin-bottom:10px}
+.lane-title{
+  font-size:11.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;
+  padding:8px 13px;border-radius:99px;text-align:center;border:1px solid;
+}
+.lane-title.a{color:var(--purple-ink);background:var(--purple-bg);border-color:var(--purple-bd)}
+.lane-title.b{color:var(--blue-ink);background:var(--blue-bg);border-color:var(--blue-bd)}
+
+/* ---------- Timeline ---------- */
+.block-label{display:flex;align-items:center;gap:10px;margin:30px 0 14px;
+  font-size:11.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.block-label i{width:9px;height:9px;border-radius:50%;background:var(--blue);flex:none}
+.block-label::after{content:"";flex:1;height:1px;background:var(--border)}
+
+.week{position:relative;display:grid;grid-template-columns:1fr 84px 1fr;gap:14px;padding-bottom:18px}
+.week::before{content:"";position:absolute;left:calc(50% - 1.5px);top:0;bottom:0;
+  width:3px;background:var(--border);border-radius:99px}
+.week:last-of-type::before{bottom:auto;height:52px}
+.spine{display:flex;justify-content:center;padding-top:14px}
+.dot{
+  position:relative;z-index:2;width:52px;height:52px;border-radius:16px;
+  background:var(--surface);border:2px solid var(--border-strong);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;
+  box-shadow:var(--shadow);
+}
+.dot small{font-size:8.5px;font-weight:750;letter-spacing:.1em;color:var(--muted);line-height:1}
+.dot b{font-size:17px;font-weight:750;line-height:1.1;font-variant-numeric:tabular-nums}
+.dot.done{background:var(--green-bg);border-color:var(--green);color:var(--green-ink)}
+.dot.done small{color:var(--green-ink)}
+.lane{display:flex;flex-direction:column;gap:10px;min-width:0}
+
+.rest{
+  border:1.5px dashed var(--border-strong);border-radius:var(--radius);
+  padding:16px 14px;font-size:12.5px;color:var(--muted);text-align:center;background:transparent;
+}
+.rest b{display:block;color:var(--text);font-size:13px;margin-bottom:2px;font-weight:640}
+
+/* ---------- Tarjeta ---------- */
+.card{
+  --c:var(--border-strong); --c-bg:var(--surface); --c-bd:var(--border); --c-ink:var(--text);
+  position:relative;text-align:left;width:100%;
+  background:var(--c-bg);border:1px solid var(--c-bd);border-left:5px solid var(--c);
+  border-radius:var(--radius);padding:14px 15px;box-shadow:var(--shadow);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(20,25,35,.06),0 12px 28px rgba(20,25,35,.08)}
+.card.a{--c:var(--purple);--c-bg:var(--purple-bg);--c-bd:var(--purple-bd);--c-ink:var(--purple-ink)}
+.card.b{--c:var(--blue);--c-bg:var(--blue-bg);--c-bd:var(--blue-bd);--c-ink:var(--blue-ink)}
+.card.qa{--c:var(--pink);--c-bg:var(--pink-bg);--c-bd:var(--pink-bd);--c-ink:var(--pink-ink);border-left-style:dashed}
+.card.done{--c:var(--green);--c-bg:var(--green-bg);--c-bd:var(--green-bd);--c-ink:var(--green-ink)}
+.card.done h3{text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.75}
+.card.done .obj{opacity:.7}
+
+.card-top{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.chip{font-size:10px;font-weight:780;letter-spacing:.05em;padding:4px 9px;border-radius:99px;
+  white-space:nowrap;background:var(--surface);color:var(--c-ink);border:1px solid var(--c-bd)}
+.card h3{font-size:15px;letter-spacing:-.008em}
+.card .obj{margin:7px 0 0;font-size:12.8px;color:var(--muted);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-foot{display:flex;align-items:center;gap:8px;margin-top:11px}
+.deliv{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+  border-radius:7px;padding:3px 9px;
+  background:var(--yellow-bg);color:var(--yellow-ink);border:1px solid var(--yellow-bd)}
+.deliv.none{background:var(--surface);color:var(--muted);border-color:var(--border);font-weight:600}
+
+.check{
+  margin-left:auto;flex:none;width:28px;height:28px;border-radius:9px;
+  border:1.5px solid var(--border-strong);background:var(--surface);
+  color:transparent;font-size:14px;line-height:1;font-weight:800;
+  display:flex;align-items:center;justify-content:center;padding:0;
+}
+.check{border-radius:10px}
+.check:hover{border-color:var(--green);color:var(--green)}
+.check[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#2f6b48}
+@media (prefers-color-scheme: dark){.check[aria-pressed="true"]{color:#16121e}}
+
+/* ---------- Modal ---------- */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(72,58,105,.38);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.sheet{background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);width:100%;max-width:560px;max-height:88vh;
+  overflow:auto;padding:0 0 20px}
+.sheet-head{padding:20px 22px 16px;border-bottom:1px solid var(--border)}
+.sheet-head.a{background:var(--purple-bg)}
+.sheet-head.b{background:var(--blue-bg)}
+.sheet-head.qa{background:var(--pink-bg)}
+.sheet-head.done{background:var(--green-bg)}
+.sheet-body{padding:0 22px}
+.sheet h2{font-size:20px;margin:10px 0 4px;letter-spacing:-.015em}
+.sheet .wk{font-size:12px;color:var(--muted);font-weight:640}
+.sheet .objetivo{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+.sheet h4{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:20px 0 9px}
+.sheet ul{margin:0;padding-left:20px}
+.sheet li{margin:7px 0;font-size:13.8px}
+.sheet li::marker{color:var(--muted)}
+.sheet code{background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:12.5px}
+.entregable{margin-top:18px;background:var(--yellow-bg);border:1px solid var(--yellow-bd);
+  border-radius:11px;padding:13px 15px;font-size:13.5px}
+.entregable strong{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--yellow-ink);margin-bottom:6px;font-weight:780}
+.entregable.vacio{background:var(--surface-2);border-color:var(--border);color:var(--muted)}
+.entregable.vacio strong{color:var(--muted)}
+.sheet-actions{display:flex;gap:10px;margin-top:22px}
+.btn{border-radius:10px;padding:11px 15px;font-size:13.5px;font-weight:640;
+  border:1px solid var(--border);background:var(--surface)}
+.btn:hover{border-color:var(--border-strong)}
+.btn.primary{background:var(--purple);color:#fff;border-color:var(--purple);
+  text-shadow:0 1px 1px rgba(90,70,140,.25)}
+.btn.primary:hover{filter:brightness(.97)}
+.btn.primary.is-done{background:var(--green-bg);color:var(--green-ink);border-color:var(--green);text-shadow:none}
+.btn.wide{flex:1}
+
+/* ---------- Horario ---------- */
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-top:4px}
+.day{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:11px 9px 9px;min-height:172px;display:flex;flex-direction:column;gap:8px}
+.day.weekend{background:var(--surface-2)}
+.day.hoy{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-bg)}
+.day.dragover{border-color:var(--green);box-shadow:0 0 0 3px var(--green-bg)}
+.day-name{display:flex;align-items:center;justify-content:space-between;gap:6px;
+  font-size:11.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding-left:2px}
+.day-name em{font-style:normal;font-size:9px;font-weight:780;letter-spacing:.06em;
+  background:var(--purple);color:#50408c;border-radius:99px;padding:2px 7px}
+@media (prefers-color-scheme: dark){.day-name em{color:#16121e}}
+
+.blk{--c:var(--border-strong);--c-bg:var(--surface-2);--c-bd:var(--border);--c-ink:var(--muted);
+  border:1px solid var(--c-bd);border-left:4px solid var(--c);background:var(--c-bg);
+  border-radius:11px;padding:9px 10px;cursor:grab}
+.blk.A{--c:var(--purple);--c-bg:var(--purple-bg);--c-bd:var(--purple-bd);--c-ink:var(--purple-ink)}
+.blk.B{--c:var(--blue);--c-bg:var(--blue-bg);--c-bd:var(--blue-bd);--c-ink:var(--blue-ink)}
+.blk:active{cursor:grabbing}
+.blk .hora{font-size:10.5px;font-weight:780;color:var(--c-ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.blk .nombre{font-size:12.5px;font-weight:640;margin-top:3px;line-height:1.3}
+.seg{display:flex;gap:4px;margin-top:9px}
+.seg button{flex:1;border:1px solid var(--border);background:var(--surface);
+  border-radius:7px;padding:4px 0;font-size:10.5px;font-weight:780;color:var(--muted)}
+.seg button:hover{border-color:var(--border-strong);color:var(--text)}
+.seg .sa[aria-pressed="true"]{background:var(--purple);border-color:var(--purple);color:#4f3f8a}
+.seg .sb[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#2f5d85}
+.seg .sl[aria-pressed="true"]{background:var(--border-strong);border-color:var(--border-strong);color:var(--surface)}
+@media (prefers-color-scheme: dark){
+  .seg .sa[aria-pressed="true"],.seg .sb[aria-pressed="true"]{color:#16121e}
+}
+.add{margin-top:auto;border:1.5px dashed var(--border-strong);background:none;border-radius:9px;
+  padding:6px;font-size:16px;line-height:1;color:var(--muted)}
+.add:hover{color:var(--text);border-color:var(--text)}
+
+.totales{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.total{border-radius:11px;padding:9px 14px;font-size:12.5px;font-weight:600;
+  background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.total b{display:block;font-size:16px;color:var(--text);font-variant-numeric:tabular-nums;font-weight:750}
+.total.ta{background:var(--purple-bg);border-color:var(--purple-bd);color:var(--purple-ink)}
+.total.ta b{color:var(--purple-ink)}
+.total.tb{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue-ink)}
+.total.tb b{color:var(--blue-ink)}
+.total.tt{background:var(--green-bg);border-color:var(--green-bd);color:var(--green-ink)}
+.total.tt b{color:var(--green-ink)}
+
+.field{display:block;margin-top:14px}
+.field span{display:block;font-size:11px;font-weight:750;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input,.field select{width:100%;padding:10px 11px;border-radius:10px;font:inherit;font-size:14px;
+  border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.link-danger{background:none;border:0;color:#d1495b;font-size:13px;font-weight:640;padding:12px 0 0}
+@media (prefers-color-scheme: dark){.link-danger{color:#f08a98}}
+
+.nota{font-size:12.5px;color:var(--muted);margin-top:20px;padding:12px 14px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);line-height:1.55}
+.nota b{color:var(--text)}
+
+/* ---------- Aviso + respaldo ---------- */
+.aviso{max-width:1140px;margin:16px auto 0;padding:13px 15px;
+  border:1px solid var(--yellow-bd);background:var(--yellow-bg);color:var(--yellow-ink);
+  border-radius:var(--radius);font-size:13px;line-height:1.5}
+.aviso b{display:block;margin-bottom:3px}
+.respaldo{display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  margin-top:34px;padding-top:16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted)}
+.respaldo .spacer{flex:1}
+.guardado{display:inline-flex;align-items:center;gap:7px;font-weight:600}
+.guardado i{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+.guardado.mal i{background:#d1495b}
+
+/* ---------- Tutorial guiado ---------- */
+.tour{position:fixed;inset:0;z-index:80}
+.tour-spot{
+  position:fixed;left:50%;top:50%;width:0;height:0;border-radius:22px;
+  box-shadow:0 0 0 9999px rgba(72,58,105,.5);
+  border:2.5px solid var(--pink);pointer-events:none;
+  transition:left .28s ease, top .28s ease, width .28s ease, height .28s ease;
+}
+.tour-spot.oculto{border-color:transparent}
+.tour-pop{
+  position:fixed;z-index:81;width:340px;max-width:calc(100vw - 24px);
+  background:var(--surface);border:1px solid var(--border);border-radius:22px;
+  padding:18px 19px 16px;box-shadow:0 18px 50px rgba(72,58,105,.28);
+}
+.tour-pop .paso{font-size:10.5px;font-weight:780;letter-spacing:.09em;text-transform:uppercase;color:var(--purple-ink)}
+.tour-pop h3{font-size:17px;margin:6px 0 7px;letter-spacing:-.01em}
+.tour-pop p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55}
+.tour-pop p b{color:var(--text)}
+.tour-dots{display:flex;gap:5px;margin:15px 0 13px}
+.tour-dots i{width:6px;height:6px;border-radius:50%;background:var(--border-strong);transition:background .2s}
+.tour-dots i.on{background:var(--purple)}
+.tour-acciones{display:flex;gap:8px;align-items:center}
+.tour-acciones .spacer{flex:1}
+.tour-acciones .btn{padding:9px 14px;font-size:13px}
+.tour-abrir{margin-left:auto}
+
+/* ---------- Móvil ---------- */
+@media (max-width:880px){
+  .lanes-head{display:none}
+  .week{grid-template-columns:1fr;gap:10px;padding-left:52px;padding-bottom:16px}
+  .week::before{left:20px}
+  .spine{position:absolute;left:0;top:12px;padding:0}
+  .dot{width:44px;height:44px;border-radius:14px}
+  .dot b{font-size:15px}
+  .lane:empty{display:none}
+  .days{grid-template-columns:1fr;gap:10px}
+  .day{min-height:0}
+  .day-name{font-size:12.5px}
+  .add{margin-top:4px}
+  h1{font-size:17px}
+  .metric{flex:1;min-width:104px}
+}
+@media (max-width:520px){
+  .overlay{padding:0;align-items:flex-end}
+  .sheet{max-width:none;border-radius:18px 18px 0 0;max-height:92vh}
+  .legend .spacer{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="title-row">
+      <div>
+        <h1>Mi ruta de aprendizaje</h1>
+        <p class="sub">Product Owner + Backend / Arquitectura · 10 semanas entrelazadas</p>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-top"><span>Ruta A · PO</span><b id="cntA">0/7</b></div>
+          <div class="bar pa"><span id="barA"></span></div>
+        </div>
+        <div class="metric">
+          <div class="metric-top"><span>Ruta B · Dev</span><b id="cntB">0/11</b></div>
+          <div class="bar pb"><span id="barB"></span></div>
+        </div>
+        <div class="metric">
+          <div class="metric-top"><span>Total</span><b id="pct">0%</b></div>
+          <div class="bar pt"><span id="barT"></span></div>
+        </div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-view="mapa">🗺️ Mapa de ruta</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="horario">🗓️ Horario semanal</button>
+      <button class="ghost-btn tour-abrir" id="verTutorial">✨ Ver tutorial</button>
+    </nav>
+  </div>
+  <div class="rainbow"></div>
+</header>
+
+<div class="aviso" id="aviso" hidden>
+  <b>Este navegador no está guardando tu progreso</b>
+  Tus marcas y cambios de horario se perderán al cerrar. Suele deberse a la opción
+  «borrar cookies y datos de sitios al cerrar» o a una ventana de incógnito.
+  Mientras tanto usa <b style="display:inline">Descargar respaldo</b>, al final de la página.
+</div>
+
+<main class="wrap">
+
+  <!-- ============ VISTA MAPA ============ -->
+  <section id="view-mapa">
+    <div class="ayuda">
+      <span class="ico">👀</span>
+      <span>
+        <b>Cómo leer el mapa:</b> cada fila es una semana del calendario. A la izquierda va lo de
+        <b>Product Owner</b>, a la derecha lo de <b>Backend / Arquitectura</b>.
+        Toca cualquier tarjeta para ver sus temas y su entregable, y el cuadrito de la derecha
+        para marcarla como hecha — al marcarla se pone verde.
+      </span>
+    </div>
+
+    <div class="legend">
+      <span class="key k-purple"><i></i> Ruta A · Product Owner</span>
+      <span class="key k-blue"><i></i> Ruta B · Backend / Arquitectura</span>
+      <span class="key k-pink"><i></i> Semana 3.5 · QA técnico</span>
+      <span class="key k-yellow"><i></i> Tiene entregable</span>
+      <span class="key k-green"><i></i> Completada</span>
+      <span class="spacer"></span>
+      <button class="ghost-btn" id="reset">Reiniciar progreso</button>
+    </div>
+
+    <div class="lanes-head">
+      <div class="lane-title a">Ruta A · Product Owner</div>
+      <div></div>
+      <div class="lane-title b">Ruta B · Backend / Arquitectura</div>
+    </div>
+
+    <div id="timeline"></div>
+
+    <p class="nota">
+      <b>Sobre el reparto:</b> la Ruta A tiene 6 semanas y la B tiene 10, así que siguen la tabla
+      de cruce de tu documento de Ruta B. En las semanas <b>3, 5 y 8</b> la Ruta A descansa
+      a propósito para que la Ruta B avance sin que se te acumulen dos entregables el mismo fin de semana.
+    </p>
+  </section>
+
+  <!-- ============ VISTA HORARIO ============ -->
+  <section id="view-horario" hidden>
+    <div class="ayuda">
+      <span class="ico">✋</span>
+      <span>
+        <b>Cómo usarlo:</b> los botones <b>A / B / –</b> de cada bloque cambian a qué ruta lo dedicas,
+        sin abrir nada. Para cambiar día, hora o nombre, toca el bloque. En computador también
+        puedes arrastrarlo a otro día.
+      </span>
+    </div>
+
+    <div class="legend">
+      <span class="key k-purple"><i></i> Dedicado a Ruta A · PO</span>
+      <span class="key k-blue"><i></i> Dedicado a Ruta B · Dev</span>
+      <span class="spacer"></span>
+      <button class="ghost-btn" id="resetHorario">Restaurar horario base</button>
+    </div>
+
+    <div class="days" id="days"></div>
+    <div class="totales" id="totales"></div>
+
+    <p class="nota">
+      Tu bloque del <b>sábado</b> es el de entregables: cámbialo a la ruta cuyo entregable te toque
+      esa semana. Las <b>horas robadas</b> del mediodía son para teoría y lectura ligera;
+      las <b>noches</b>, para lo que exige concentración.
+    </p>
+  </section>
+
+  <div class="respaldo">
+    <span class="guardado" id="guardado"><i></i> <span id="guardadoTxt">Guardado en este navegador</span></span>
+    <span class="spacer"></span>
+    <button class="ghost-btn" id="exportar">Descargar respaldo</button>
+    <button class="ghost-btn" id="importarBtn">Restaurar respaldo</button>
+    <input type="file" id="importar" accept="application/json,.json" hidden>
+  </div>
+
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="tour" id="tour" hidden>
+  <div class="tour-spot oculto" id="tourSpot"></div>
+  <div class="tour-pop" id="tourPop" role="dialog" aria-modal="true">
+    <div class="paso" id="tourPaso"></div>
+    <h3 id="tourTitulo"></h3>
+    <p id="tourTexto"></p>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-acciones">
+      <button class="ghost-btn" id="tourSaltar">Saltar</button>
+      <span class="spacer"></span>
+      <button class="ghost-btn" id="tourAtras">Atrás</button>
+      <button class="btn primary" id="tourSig">Siguiente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   DATOS — extraídos de ruta-product-owner.md y
+   ruta-desarrollo-backend-arquitectura.md
+   ========================================================= */
+
+const NODOS = {
+  /* ---------- RUTA A · Product Owner ---------- */
+  A1:{ruta:"A",titulo:"Fundamentos y mentalidad de PO",docSem:"Ruta A · Semana 1",
+    objetivo:"Entender el rol vs. Scrum Master vs. PM, y el «por qué» detrás del trabajo diario.",
+    temas:[
+      "Scrum Guide oficial (scrumguides.org) — 15 páginas, gratis, una sola tarde",
+      "Diferencia clave a interiorizar: el PO maximiza <b>valor</b>, no solo entrega tickets",
+      "Conceptos de Product Vision y Product Goal",
+      "Ejercicio: escribir la visión de producto de un módulo del proyecto de gestión empresarial que armas con tus compañeros"
+    ],
+    entregable:"1 página con la visión + 3 objetivos de producto para ese módulo."},
+
+  A2:{ruta:"A",titulo:"Descubrimiento y priorización",docSem:"Ruta A · Semana 2",
+    objetivo:"Aprender a decidir qué construir primero con criterio, no por presión.",
+    temas:[
+      "Frameworks de priorización: RICE, MoSCoW, Kano — elige 2 y practícalos con backlog real de SYSCOM",
+      "User Story Mapping (Jeff Patton) — técnica visual clave",
+      "Escritura de historias de usuario con criterios de aceptación (conecta directo con tu QA)",
+      "Herramienta: practica en el backlog de RNDC o del app de gestión empresarial"
+    ],
+    entregable:"5 historias de usuario con criterios de aceptación, priorizadas con RICE o MoSCoW."},
+
+  A3:{ruta:"A",titulo:"Métricas y decisiones basadas en datos",docSem:"Ruta A · Semana 3",
+    objetivo:"Dejar de priorizar «por instinto» y empezar a priorizar con evidencia.",
+    temas:[
+      "Métricas clave: velocity, lead time, cycle time, burndown / burnup",
+      "OKRs aplicados a producto (no solo a empresa)",
+      "Conexión con tu meta de analista de datos: leer un dashboard de Power BI con lente de producto — ya está en tu plan de estudio, solo le cambias el enfoque"
+    ],
+    entregable:"Dashboard simple (Excel o Power BI) con 3 métricas del backlog actual."},
+
+  A4:{ruta:"A",titulo:"Ceremonias y facilitación efectiva",docSem:"Ruta A · Semana 4",
+    objetivo:"Liderar sin necesitar autoridad formal.",
+    temas:[
+      "Cómo facilitar Sprint Planning, Refinement, Review y Retro — el rol del PO en cada una",
+      "Manejo de stakeholders difíciles: negociación de alcance vs. tiempo vs. calidad",
+      "Comunicación asertiva en español técnico (tu glosario de oratoria sirve directo aquí)"
+    ],
+    entregable:"Guion de facilitación de un Refinement de 30 minutos."},
+
+  A5:{ruta:"A",titulo:"Calidad integrada al rol — tu ventaja competitiva",docSem:"Ruta A · Semana 5",
+    objetivo:"Ser la PO que «no deja pasar bugs por apuro»: un diferenciador real.",
+    temas:[
+      "Definition of Done vs. Definition of Ready",
+      "Cómo un PO colabora con QA sin hacer micromanagement — tú vives ambos lados, aprovéchalo",
+      "Testing basado en criterios de aceptación como contrato vivo con QA / Cypress / Selenium"
+    ],
+    entregable:"Plantilla de Definition of Done adaptada a Syscom / RNDC."},
+
+  A6:{ruta:"A",titulo:"Certificación PSPO I",docSem:"Ruta A · Semana 6 (parte 1)",
+    objetivo:"Validar y formalizar lo aprendido. Opcional pero recomendable.",
+    temas:[
+      "Opción rápida y reconocida: <b>PSPO I</b> (Scrum.org) — examen online, ~$200 USD",
+      "Con el material gratuito basta una semana de estudio si ya hiciste las semanas 1-5",
+      "Alternativa gratuita: certificado de fundamentos en Coursera / edX si el presupuesto aprieta"
+    ],
+    entregable:null},
+
+  A7:{ruta:"A",titulo:"Simulacro final y roadmap de producto",docSem:"Ruta A · Semana 6 (parte 2)",
+    objetivo:"Cerrar la ruta con una pieza real, presentable.",
+    temas:[
+      "Toma un caso real de SYSCOM y arma un mini roadmap de producto de principio a fin",
+      "Aplica todo lo anterior: visión, priorización, métricas, DoD y facilitación sobre el mismo caso"
+    ],
+    entregable:"Roadmap de producto real, presentable a tu PM."},
+
+  /* ---------- RUTA B · Backend / Arquitectura ---------- */
+  B1:{ruta:"B",titulo:"SQL avanzado más allá de lo operativo",docSem:"Ruta B · Semana 1 · Bloque 1",
+    objetivo:"Cerrar huecos y subir el nivel sobre tu base ya sólida de SQL Server.",
+    temas:[
+      "Índices: cuándo y por qué (clustered vs. non-clustered), análisis de planes de ejecución",
+      "Transacciones e isolation levels — clave si sigues tocando RNDC / DIAN",
+      "Normalización vs. desnormalización: cuándo romper la regla y por qué"
+    ],
+    entregable:"Analiza el plan de ejecución de una consulta lenta real de RNDC y documenta el hallazgo."},
+
+  B2:{ruta:"B",titulo:"Diseño de APIs",docSem:"Ruta B · Semana 2 · Bloque 1",
+    objetivo:"Diseñar contratos de API con criterio, no por costumbre.",
+    temas:[
+      "REST bien hecho: verbos, códigos de estado, versionado, paginación",
+      "Introducción a GraphQL — solo para saber cuándo <b>no</b> usar REST",
+      "Autenticación / autorización: JWT y OAuth2 — conceptos, no implementación exhaustiva"
+    ],
+    entregable:"Diseña (en papel o Swagger) el contrato de una API para un módulo del app de gestión empresarial."},
+
+  B3:{ruta:"B",titulo:"Backend moderno en la práctica",docSem:"Ruta B · Semana 3 · Bloque 1",
+    objetivo:"Llevar los patrones a código real en el stack que usas.",
+    temas:[
+      "Si SYSCOM usa .NET: C# moderno a fondo — async/await, LINQ, inyección de dependencias",
+      "Patrones básicos: Repository, Unit of Work, Service Layer",
+      "Testing de backend: unit tests vs. integration tests, mocking de dependencias externas"
+    ],
+    entregable:"Un endpoint simple con su test unitario correspondiente."},
+
+  B35:{ruta:"B",qa:true,titulo:"QA técnico y automatización",docSem:"Ruta B · Semana 3.5 · tu área directa",
+    objetivo:"Profesionalizar la automatización que ya haces y llevarla al pipeline.",
+    temas:[
+      "<b>Cypress a fondo:</b> estructura de proyecto, comandos custom, fixtures, interceptación de requests (<code>cy.intercept</code>), manejo de datos de prueba",
+      "<b>Selenium a fondo:</b> WebDriver, localizadores robustos (evitar XPath frágil), Page Object Model",
+      "Cómo decidir Cypress vs. Selenium: Cypress para SPA modernas, Selenium para compatibilidad cross-browser amplia o stacks legacy",
+      "Integración de pruebas automatizadas en el pipeline CI/CD de GitLab — que corran en cada merge request, no solo manualmente",
+      "Métricas de QA: cobertura de pruebas, densidad de defectos, tasa de falsos positivos"
+    ],
+    entregable:"Un flujo crítico del sistema (ej. creación de un registro RNDC) cubierto con una prueba end-to-end corriendo en el pipeline."},
+
+  B4:{ruta:"B",titulo:"Frontend lo suficiente para hablar el mismo idioma",docSem:"Ruta B · Semana 4 · Bloque 2",
+    objetivo:"No ser experta: entender lo justo para conversar y depurar con criterio.",
+    temas:[
+      "Componentes, estado y ciclo de vida (React es buena apuesta, ya se usa en el ecosistema Claude / Vercel)",
+      "Cómo el frontend consume una API — de dónde vienen los errores típicos que ya debuggeas en Vercel"
+    ],
+    entregable:null},
+
+  B5:{ruta:"B",titulo:"Infraestructura y despliegue",docSem:"Ruta B · Semana 5 · Bloque 2",
+    objetivo:"Entender de punta a punta cómo llega el código a producción.",
+    temas:[
+      "Contenedores: qué es Docker y por qué importa — no necesitas ser DevOps, sí entender el concepto",
+      "CI/CD real: ya tienes GitLab, profundiza en pipelines (build, test, deploy automatizado)",
+      "Diferencia entre ambientes dev / staging / prod y por qué el rollback de Vercel falla cuando falla"
+    ],
+    entregable:"Documenta el pipeline actual de un proyecto tuyo (as-is) e identifica un punto de mejora."},
+
+  B6:{ruta:"B",titulo:"Servicios y comunicación entre sistemas",docSem:"Ruta B · Semana 6 · Bloque 2",
+    objetivo:"Ponerle marco teórico a las integraciones que ya operas.",
+    temas:[
+      "Monolito vs. microservicios — trade-offs reales, no dogma",
+      "Colas de mensajes (conceptual): cuándo un proceso debe ser asíncrono — piensa en los timeouts que ya viste en P6 Cumplidos de Manifiesto",
+      "APIs externas e integraciones: tu experiencia con RNDC / DIAN ya es esto en la práctica"
+    ],
+    entregable:"Diagrama de arquitectura actual de la integración RNDC (as-is), con anotaciones de puntos frágiles."},
+
+  B7:{ruta:"B",titulo:"Principios de arquitectura",docSem:"Ruta B · Semana 7 · Bloque 3",
+    objetivo:"Pensar arquitectura con criterio, no memorizando siglas.",
+    temas:[
+      "SOLID aplicado con ejemplos reales — no memorizado, aplicado",
+      "Clean Architecture / arquitectura hexagonal: separar negocio de infraestructura",
+      "Deuda técnica: cómo medirla y cuándo vale la pena pagarla vs. postergarla (esto ya lo tienes del rol PO)"
+    ],
+    entregable:null},
+
+  B8:{ruta:"B",titulo:"Decisiones de arquitectura con lente de negocio",docSem:"Ruta B · Semana 8 · Bloque 3",
+    objetivo:"Traducir decisiones técnicas a rentabilidad y sostenibilidad.",
+    temas:[
+      "Cómo evaluar «build vs. buy»: cuándo desarrollar algo propio vs. usar una herramienta existente",
+      "Costo de oportunidad técnico: tiempo de desarrollo vs. velocidad al mercado",
+      "Escalabilidad real vs. escalabilidad prematura — la sobre-ingeniería es un error común y costoso"
+    ],
+    entregable:"Documento de 1 página evaluando una decisión arquitectónica real de tu equipo con criterio costo / beneficio."},
+
+  B9:{ruta:"B",titulo:"Arquitectura y automatización unidas",docSem:"Ruta B · Semana 9 · Bloque 3",
+    objetivo:"Diseñar sistemas que faciliten la automatización en vez de estorbarla.",
+    temas:[
+      "Sistemas testeables desde el principio: <code>data-testid</code> consistentes, selectores estables, estados predecibles",
+      "Contract testing — verificar que frontend y backend no se rompan entre sí",
+      "Pirámide de testing: unit &gt; integration &gt; e2e, y por qué el orden importa para la sostenibilidad — muchos e2e lentos y frágiles son señal de arquitectura débil, no de falta de esfuerzo en QA",
+      "Gestión de datos de prueba en entornos automatizados: seeds, fixtures y aislamiento entre pruebas"
+    ],
+    entregable:"Audita un flujo actual de RNDC difícil de automatizar y propone 2-3 cambios de arquitectura (no de test) que lo harían más testeable."},
+
+  B10:{ruta:"B",titulo:"Consolidación — pieza de portafolio",docSem:"Ruta B · Semana 10 · Bloque 4",
+    objetivo:"Cerrar con la pieza que demuestra la combinación dev + visión de negocio.",
+    temas:[
+      "Toma un módulo real del proyecto de gestión empresarial que armas con tus compañeros",
+      "1. Diagrama de arquitectura propuesto (to-be)",
+      "2. Justificación de negocio: por qué esa arquitectura es rentable, sostenible y ágil de mantener",
+      "3. Plan de testing / automatización asociado"
+    ],
+    entregable:"Pieza de portafolio con el módulo real: arquitectura to-be + justificación de negocio + plan de testing."}
+};
+
+/* Línea de tiempo combinada — reparto según la tabla de cruce del documento B */
+const SEMANAS = [
+  {n:1,  bloque:"Bloque 1 · Backend profundo", a:["A1"], b:["B1"]},
+  {n:2,  a:["A2"], b:["B2"]},
+  {n:3,  a:[],     b:["B3","B35"]},
+  {n:4,  bloque:"Bloque 2 · Full-stack e infraestructura", a:["A3"], b:["B4"]},
+  {n:5,  a:[],     b:["B5"]},
+  {n:6,  a:["A4"], b:["B6"]},
+  {n:7,  bloque:"Bloque 3 · Arquitectura con criterio de negocio", a:["A5"], b:["B7"]},
+  {n:8,  a:[],     b:["B8"]},
+  {n:9,  a:["A6"], b:["B9"]},
+  {n:10, bloque:"Bloque 4 · Consolidación", a:["A7"], b:["B10"]}
+];
+
+const DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+
+/* Horario base precargado */
+const HORARIO_BASE = [
+  {id:"h1", dia:0, ini:"13:00", fin:"14:00", nombre:"Hora robada · lectura",       ruta:"A"},
+  {id:"h2", dia:1, ini:"13:00", fin:"14:00", nombre:"Hora robada · lectura",       ruta:"B"},
+  {id:"h3", dia:2, ini:"13:00", fin:"14:00", nombre:"Hora robada · lectura",       ruta:"A"},
+  {id:"h4", dia:3, ini:"13:00", fin:"14:00", nombre:"Hora robada · lectura",       ruta:"B"},
+  {id:"h5", dia:4, ini:"13:00", fin:"14:00", nombre:"Hora robada · lectura",       ruta:"A"},
+  {id:"n1", dia:0, ini:"20:00", fin:"21:30", nombre:"Bloque principal",            ruta:"B"},
+  {id:"n2", dia:1, ini:"20:00", fin:"21:30", nombre:"Bloque principal",            ruta:"A"},
+  {id:"n3", dia:2, ini:"20:00", fin:"21:30", nombre:"Bloque principal",            ruta:"B"},
+  {id:"n4", dia:3, ini:"20:00", fin:"21:30", nombre:"Bloque principal",            ruta:"A"},
+  {id:"n5", dia:4, ini:"20:00", fin:"21:30", nombre:"Ejercicio semanal (Exercism → PO)", ruta:"A"},
+  {id:"f1", dia:5, ini:"10:00", fin:"12:00", nombre:"Entregable de la semana",     ruta:"A"}
+];
+
+/* =========================================================
+   Estado + persistencia
+   ========================================================= */
+const K_PROG = "ruta.progreso.v1";
+const K_HOR  = "ruta.horario.v1";
+const K_TAB  = "ruta.tab.v1";
+
+const load = (k, def) => {
+  try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }
+  catch(e){ return def; }
+};
+
+let storageOK = true;
+const save = (k, v) => {
+  try {
+    localStorage.setItem(k, JSON.stringify(v));
+    if (localStorage.getItem(k) === null) throw new Error("no persiste");
+  } catch(e){
+    storageOK = false;
+    marcarEstadoGuardado();
+  }
+};
+
+/* El guardado local puede estar deshabilitado (incógnito, "borrar datos al cerrar",
+   políticas del navegador). Lo comprobamos de verdad en vez de fallar en silencio. */
+function probarStorage(){
+  try {
+    const t = "ruta.test." + Date.now();
+    localStorage.setItem(t, "1");
+    const ok = localStorage.getItem(t) === "1";
+    localStorage.removeItem(t);
+    return ok;
+  } catch(e){ return false; }
+}
+
+function marcarEstadoGuardado(){
+  const chip = document.getElementById("guardado");
+  if (!chip) return;
+  chip.classList.toggle("mal", !storageOK);
+  document.getElementById("guardadoTxt").textContent = storageOK
+    ? "Guardado en este navegador"
+    : "Sin guardado automático — descarga un respaldo";
+  document.getElementById("aviso").hidden = storageOK;
+}
+
+let progreso = load(K_PROG, {});
+let horario  = load(K_HOR, null) || HORARIO_BASE.map(b => Object.assign({}, b));
+
+/* =========================================================
+   Vista: mapa
+   ========================================================= */
+const timelineEl = document.getElementById("timeline");
+
+function cardHTML(id){
+  const n = NODOS[id];
+  const done = !!progreso[id];
+  const cls = ["card", n.ruta === "A" ? "a" : "b", n.qa ? "qa" : "", done ? "done" : ""]
+    .filter(Boolean).join(" ");
+  const chip = n.qa ? "QA · SEMANA 3.5"
+             : n.ruta === "A" ? "RUTA A · PO" : "RUTA B · DEV";
+  const deliv = n.entregable
+    ? '<span class="deliv">◆ Entregable</span>'
+    : '<span class="deliv none">Sin entregable formal</span>';
+  return `<div class="${cls}" data-id="${id}" role="button" tabindex="0">
+    <div class="card-top">
+      <span class="chip">${chip}</span>
+      <button class="check" data-check="${id}" aria-pressed="${done}"
+              aria-label="Marcar ${n.titulo} como completada">✓</button>
+    </div>
+    <h3>${n.titulo}</h3>
+    <p class="obj">${n.objetivo}</p>
+    <div class="card-foot">${deliv}</div>
+  </div>`;
+}
+
+const REST = `<div class="rest"><b>Ruta A descansa</b>Esta semana concentra tu energía en la Ruta B</div>`;
+
+function renderMapa(){
+  timelineEl.innerHTML = SEMANAS.map(s => {
+    const todos = s.a.concat(s.b);
+    const doneWeek = todos.length > 0 && todos.every(id => progreso[id]);
+    const label = s.bloque ? `<div class="block-label"><i></i>${s.bloque}</div>` : "";
+    const laneA = s.a.length ? s.a.map(cardHTML).join("") : REST;
+    return `${label}<div class="week" data-sem="${s.n}">
+      <div class="lane lane-a">${laneA}</div>
+      <div class="spine">
+        <div class="dot ${doneWeek ? "done" : ""}">
+          <small>${doneWeek ? "LISTA" : "SEMANA"}</small><b>${doneWeek ? "✓" : s.n}</b>
+        </div>
+      </div>
+      <div class="lane lane-b">${s.b.map(cardHTML).join("")}</div>
+    </div>`;
+  }).join("");
+  renderProgreso();
+}
+
+function renderProgreso(){
+  const ids = Object.keys(NODOS);
+  const set = (barId, cntId, lista) => {
+    const hechos = lista.filter(id => progreso[id]).length;
+    const pct = lista.length ? Math.round(hechos / lista.length * 100) : 0;
+    document.getElementById(barId).style.width = pct + "%";
+    if (cntId) document.getElementById(cntId).textContent = hechos + "/" + lista.length;
+    return pct;
+  };
+  set("barA", "cntA", ids.filter(id => NODOS[id].ruta === "A"));
+  set("barB", "cntB", ids.filter(id => NODOS[id].ruta === "B"));
+  const pct = set("barT", null, ids);
+  const hechos = ids.filter(id => progreso[id]).length;
+  document.getElementById("pct").textContent = pct + "% · " + hechos + "/" + ids.length;
+}
+
+function toggle(id){
+  if (progreso[id]) delete progreso[id]; else progreso[id] = true;
+  save(K_PROG, progreso);
+  renderMapa();
+}
+
+timelineEl.addEventListener("click", e => {
+  const chk = e.target.closest("[data-check]");
+  if (chk){ e.stopPropagation(); toggle(chk.dataset.check); return; }
+  const card = e.target.closest(".card");
+  if (card) abrirNodo(card.dataset.id);
+});
+timelineEl.addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const card = e.target.closest(".card");
+  if (card){ e.preventDefault(); abrirNodo(card.dataset.id); }
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  if (!confirm("¿Borrar todas las marcas de progreso?")) return;
+  progreso = {}; save(K_PROG, progreso); renderMapa();
+});
+
+/* =========================================================
+   Modal
+   ========================================================= */
+const overlay = document.getElementById("overlay");
+const sheet   = document.getElementById("sheet");
+
+function abrirSheet(html){
+  sheet.innerHTML = html;
+  overlay.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function cerrarSheet(){
+  overlay.hidden = true;
+  sheet.innerHTML = "";
+  document.body.style.overflow = "";
+}
+overlay.addEventListener("click", e => { if (e.target === overlay) cerrarSheet(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) cerrarSheet(); });
+
+function abrirNodo(id){
+  const n = NODOS[id];
+  const done = !!progreso[id];
+  const tono = done ? "done" : n.qa ? "qa" : n.ruta === "A" ? "a" : "b";
+  const chipTxt = n.qa ? "QA · SEMANA 3.5"
+                : n.ruta === "A" ? "RUTA A · PRODUCT OWNER" : "RUTA B · BACKEND / ARQUITECTURA";
+  const keyCls = n.qa ? "k-pink" : n.ruta === "A" ? "k-purple" : "k-blue";
+  abrirSheet(`
+    <div class="sheet-head ${tono}">
+      <span class="key ${keyCls}"><i></i>${chipTxt}</span>
+      <h2>${n.titulo}</h2>
+      <div class="wk">${n.docSem}${done ? " · ✓ completada" : ""}</div>
+      <p class="objetivo">${n.objetivo}</p>
+    </div>
+    <div class="sheet-body">
+      <h4>Temas</h4>
+      <ul>${n.temas.map(t => "<li>" + t + "</li>").join("")}</ul>
+      ${n.entregable
+        ? `<div class="entregable"><strong>◆ Entregable</strong>${n.entregable}</div>`
+        : `<div class="entregable vacio"><strong>Entregable</strong>Ninguno formal — esta semana es comprensión, no producción.</div>`}
+      <div class="sheet-actions">
+        <button class="btn primary wide ${done ? "is-done" : ""}" data-toggle="${id}">
+          ${done ? "✓ Completada — desmarcar" : "Marcar como completada"}
+        </button>
+        <button class="btn" data-close>Cerrar</button>
+      </div>
+    </div>
+  `);
+}
+
+sheet.addEventListener("click", e => {
+  if (e.target.closest("[data-close]")) { cerrarSheet(); return; }
+  const t = e.target.closest("[data-toggle]");
+  if (t){ toggle(t.dataset.toggle); abrirNodo(t.dataset.toggle); }
+});
+
+/* =========================================================
+   Vista: horario
+   ========================================================= */
+const daysEl = document.getElementById("days");
+const hoyIdx = (new Date().getDay() + 6) % 7;   /* 0 = lunes */
+
+const mins = h => { const p = h.split(":"); return (+p[0]) * 60 + (+p[1]); };
+const dur  = b => Math.max(0, mins(b.fin) - mins(b.ini));
+const horas = m => (m / 60).toFixed(m % 60 ? 1 : 0).replace(".0", "") + " h";
+
+function blockHTML(b){
+  const on = r => b.ruta === r ? "true" : "false";
+  return `<div class="blk ${b.ruta}" draggable="true" data-blk="${b.id}">
+    <div class="hora">${b.ini} – ${b.fin} · ${horas(dur(b))}</div>
+    <div class="nombre">${b.nombre}</div>
+    <div class="seg">
+      <button class="sa" data-ruta="A" data-id="${b.id}" aria-pressed="${on("A")}" title="Dedicar a Ruta A">A</button>
+      <button class="sb" data-ruta="B" data-id="${b.id}" aria-pressed="${on("B")}" title="Dedicar a Ruta B">B</button>
+      <button class="sl" data-ruta="L" data-id="${b.id}" aria-pressed="${on("L")}" title="Dejar libre">–</button>
+    </div>
+  </div>`;
+}
+
+function renderHorario(){
+  daysEl.innerHTML = DIAS.map((d, i) => {
+    const bs = horario.filter(b => b.dia === i).sort((x, y) => mins(x.ini) - mins(y.ini));
+    const cls = ["day", i > 4 ? "weekend" : "", i === hoyIdx ? "hoy" : ""].filter(Boolean).join(" ");
+    return `<div class="${cls}" data-dia="${i}">
+      <div class="day-name"><span>${d}</span>${i === hoyIdx ? "<em>HOY</em>" : ""}</div>
+      ${bs.map(blockHTML).join("")}
+      <button class="add" data-add="${i}" title="Añadir bloque">+</button>
+    </div>`;
+  }).join("");
+
+  const suma = r => horario.filter(b => b.ruta === r).reduce((t, b) => t + dur(b), 0);
+  const tot = horario.reduce((t, b) => t + dur(b), 0);
+  document.getElementById("totales").innerHTML = `
+    <div class="total tt"><b>${horas(tot)}</b>Total semanal</div>
+    <div class="total ta"><b>${horas(suma("A"))}</b>Ruta A · PO</div>
+    <div class="total tb"><b>${horas(suma("B"))}</b>Ruta B · Dev</div>
+    <div class="total"><b>${horas(suma("L"))}</b>Sin asignar</div>`;
+}
+
+const findBlk = id => horario.find(b => b.id === id);
+
+daysEl.addEventListener("click", e => {
+  const add = e.target.closest("[data-add]");
+  if (add){ editarBloque(null, +add.dataset.add); return; }
+
+  const seg = e.target.closest("[data-ruta]");
+  if (seg){
+    e.stopPropagation();
+    const b = findBlk(seg.dataset.id);
+    if (b){ b.ruta = seg.dataset.ruta; save(K_HOR, horario); renderHorario(); }
+    return;
+  }
+  const blk = e.target.closest("[data-blk]");
+  if (blk) editarBloque(blk.dataset.blk, null);
+});
+
+/* Drag & drop (escritorio) */
+let arrastrando = null;
+daysEl.addEventListener("dragstart", e => {
+  const blk = e.target.closest("[data-blk]");
+  if (!blk) return;
+  arrastrando = blk.dataset.blk;
+  e.dataTransfer.effectAllowed = "move";
+  try { e.dataTransfer.setData("text/plain", arrastrando); } catch(err){}
+});
+daysEl.addEventListener("dragover", e => {
+  const day = e.target.closest(".day");
+  if (!day || !arrastrando) return;
+  e.preventDefault();
+  day.classList.add("dragover");
+});
+daysEl.addEventListener("dragleave", e => {
+  const day = e.target.closest(".day");
+  if (day) day.classList.remove("dragover");
+});
+daysEl.addEventListener("drop", e => {
+  const day = e.target.closest(".day");
+  if (!day || !arrastrando) return;
+  e.preventDefault();
+  const b = findBlk(arrastrando);
+  if (b){ b.dia = +day.dataset.dia; save(K_HOR, horario); }
+  arrastrando = null;
+  renderHorario();
+});
+daysEl.addEventListener("dragend", () => {
+  arrastrando = null;
+  daysEl.querySelectorAll(".dragover").forEach(d => d.classList.remove("dragover"));
+});
+
+function editarBloque(id, diaNuevo){
+  const nuevo = !id;
+  const b = nuevo
+    ? {id:"x" + Date.now(), dia:diaNuevo, ini:"20:00", fin:"21:30", nombre:"Nuevo bloque", ruta:"L"}
+    : findBlk(id);
+  if (!b) return;
+
+  abrirSheet(`
+    <div class="sheet-head ${b.ruta === "A" ? "a" : b.ruta === "B" ? "b" : ""}">
+      <h2>${nuevo ? "Nuevo bloque" : "Editar bloque"}</h2>
+      <div class="wk">${nuevo ? "Se añadirá a " + DIAS[b.dia] : DIAS[b.dia] + " · " + b.ini + " – " + b.fin}</div>
+    </div>
+    <div class="sheet-body">
+      <label class="field"><span>Nombre</span>
+        <input id="f-nombre" type="text" value="${b.nombre.replace(/"/g, "&quot;")}"></label>
+      <label class="field"><span>Día</span>
+        <select id="f-dia">${DIAS.map((d, i) =>
+          `<option value="${i}" ${i === b.dia ? "selected" : ""}>${d}</option>`).join("")}</select></label>
+      <div class="row2">
+        <label class="field"><span>Inicio</span><input id="f-ini" type="time" value="${b.ini}"></label>
+        <label class="field"><span>Fin</span><input id="f-fin" type="time" value="${b.fin}"></label>
+      </div>
+      <label class="field"><span>Ruta</span>
+        <select id="f-ruta">
+          <option value="A" ${b.ruta === "A" ? "selected" : ""}>Ruta A · Product Owner</option>
+          <option value="B" ${b.ruta === "B" ? "selected" : ""}>Ruta B · Backend / Arquitectura</option>
+          <option value="L" ${b.ruta === "L" ? "selected" : ""}>Libre / sin asignar</option>
+        </select></label>
+      <div class="sheet-actions">
+        <button class="btn primary wide" data-guardar>Guardar</button>
+        <button class="btn" data-close>Cancelar</button>
+      </div>
+      ${nuevo ? "" : '<button class="link-danger" data-borrar>Eliminar este bloque</button>'}
+    </div>
+  `);
+
+  sheet.querySelector("[data-guardar]").addEventListener("click", () => {
+    b.nombre = sheet.querySelector("#f-nombre").value.trim() || "Bloque";
+    b.dia    = +sheet.querySelector("#f-dia").value;
+    b.ini    = sheet.querySelector("#f-ini").value || "20:00";
+    b.fin    = sheet.querySelector("#f-fin").value || "21:30";
+    b.ruta   = sheet.querySelector("#f-ruta").value;
+    if (nuevo) horario.push(b);
+    save(K_HOR, horario);
+    cerrarSheet();
+    renderHorario();
+  });
+
+  const del = sheet.querySelector("[data-borrar]");
+  if (del) del.addEventListener("click", () => {
+    horario = horario.filter(x => x.id !== b.id);
+    save(K_HOR, horario);
+    cerrarSheet();
+    renderHorario();
+  });
+}
+
+document.getElementById("resetHorario").addEventListener("click", () => {
+  if (!confirm("¿Restaurar el horario base y perder tus cambios?")) return;
+  horario = HORARIO_BASE.map(b => Object.assign({}, b));
+  save(K_HOR, horario);
+  renderHorario();
+});
+
+/* =========================================================
+   Respaldo en archivo — independiente del navegador
+   ========================================================= */
+document.getElementById("exportar").addEventListener("click", () => {
+  const datos = JSON.stringify({v:1, fecha:new Date().toISOString(), progreso, horario}, null, 2);
+  const url = URL.createObjectURL(new Blob([datos], {type:"application/json"}));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ruta-aprendizaje-respaldo-" + new Date().toISOString().slice(0, 10) + ".json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+const inputImport = document.getElementById("importar");
+document.getElementById("importarBtn").addEventListener("click", () => inputImport.click());
+inputImport.addEventListener("change", () => {
+  const f = inputImport.files && inputImport.files[0];
+  if (!f) return;
+  const lector = new FileReader();
+  lector.onload = () => {
+    try {
+      const d = JSON.parse(lector.result);
+      if (!d || typeof d !== "object") throw new Error("formato");
+      if (d.progreso && typeof d.progreso === "object") progreso = d.progreso;
+      if (Array.isArray(d.horario) && d.horario.length) horario = d.horario;
+      save(K_PROG, progreso);
+      save(K_HOR, horario);
+      renderMapa();
+      renderHorario();
+      alert("Respaldo restaurado.");
+    } catch(e){
+      alert("No pude leer ese archivo. Debe ser el .json que descargaste desde aquí.");
+    }
+    inputImport.value = "";
+  };
+  lector.readAsText(f);
+});
+
+/* =========================================================
+   Tabs
+   ========================================================= */
+const tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+function mostrar(v){
+  tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
+  document.getElementById("view-mapa").hidden    = v !== "mapa";
+  document.getElementById("view-horario").hidden = v !== "horario";
+  save(K_TAB, v);
+}
+tabs.forEach(t => t.addEventListener("click", () => mostrar(t.dataset.view)));
+
+/* =========================================================
+   Tutorial guiado — recorre la página con la Semana 1 de ejemplo
+   ========================================================= */
+const TOUR = [
+  {titulo:"¡Hola! 👋",
+   texto:"Te muestro en un minuto cómo usar tu ruta, con tu <b>Semana 1</b> de ejemplo. Son 12 pasitos y puedes salir cuando quieras."},
+
+  {vista:"mapa", sel:".lanes-head", titulo:"Dos carriles 🛣️",
+   texto:"A la izquierda va <b>Product Owner</b> (morado) y a la derecha <b>Backend / Arquitectura</b> (azul). Cada fila del mapa es una semana del calendario."},
+
+  {vista:"mapa", sel:'[data-id="A1"]', titulo:"Tu primera tarjeta",
+   texto:"Ejemplo real: en la Semana 1 te toca <b>Fundamentos y mentalidad de PO</b>. El morado ya te dice, sin leer, que es de la Ruta A."},
+
+  {vista:"mapa", sel:'[data-id="A1"] .deliv', titulo:"La etiqueta amarilla 🟡",
+   texto:"Amarillo significa que esa semana <b>tiene entregable</b>. Si sale gris, es una semana solo de estudiar y entender."},
+
+  {vista:"mapa", antes:() => abrirNodo("A1"), sel:".sheet .entregable", titulo:"Ábrela para ver el detalle",
+   texto:"Al tocar la tarjeta se abre esto: los temas de la semana y, al final, el entregable exacto. Aquí sería <b>1 página con la visión + 3 objetivos</b> de tu módulo."},
+
+  {vista:"mapa", sel:'[data-id="A1"] .check', titulo:"Márcala cuando la termines ✅",
+   texto:"Este cuadrito la marca como hecha: la tarjeta <b>se pone verde</b> y tu barra de progreso sube. Se guarda solo, no hay que darle a ningún botón."},
+
+  {vista:"mapa", sel:".metrics", titulo:"Tu avance",
+   texto:"Una barra por ruta y una del total. Así notas rápido si una de las dos se te está quedando atrás."},
+
+  {vista:"mapa", sel:'.week[data-sem="5"] .rest', titulo:"Las semanas de descanso 😴",
+   texto:"En las semanas <b>3, 5 y 8</b> la Ruta A descansa a propósito, para que no se te junten dos entregables el mismo fin de semana."},
+
+  {vista:"horario", sel:'.day[data-dia="0"]', titulo:"Ahora tu semana real 🗓️",
+   texto:"Cada columna es un día con tus bloques: la <b>hora robada</b> del mediodía y el <b>bloque de noche</b> de 8:00 a 9:30."},
+
+  {vista:"horario", sel:'.day[data-dia="0"] .blk .seg', titulo:"A qué ruta le dedicas cada bloque",
+   texto:"Con <b>A</b>, <b>B</b> o <b>–</b> cambias la ruta de ese bloque al instante. Y si tocas el bloque puedes cambiarle día, hora o nombre."},
+
+  {vista:"horario", sel:'.day[data-dia="5"]', titulo:"El sábado es de entregables",
+   texto:"Tu sesión larga de 2 horas. Cámbiala a la ruta cuyo entregable te toque esa semana."},
+
+  {sel:".respaldo", titulo:"Guarda un respaldo 💾",
+   texto:"Tu progreso vive en este navegador. Descarga el respaldo de vez en cuando y no pierdes nada aunque se limpien los datos."},
+
+  {titulo:"¡Listo! 🌸",
+   texto:"Ya puedes empezar. Si se te olvida algo, el botón <b>✨ Ver tutorial</b> de arriba te lo repite cuando quieras."}
+];
+
+const K_TOUR = "ruta.tutorial.v1";
+const tourEl  = document.getElementById("tour");
+const tourSpot= document.getElementById("tourSpot");
+const tourPop = document.getElementById("tourPop");
+let tPaso = 0, tourActivo = false;
+
+function colocar(sel, mover){
+  const el = sel ? document.querySelector(sel) : null;
+  if (!el){
+    tourSpot.classList.add("oculto");
+    tourSpot.style.cssText = "";
+    tourPop.style.left = "50%";
+    tourPop.style.top  = "50%";
+    tourPop.style.transform = "translate(-50%,-50%)";
+    return;
+  }
+  if (mover) el.scrollIntoView({block:"center", inline:"nearest"});
+  const r = el.getBoundingClientRect(), pad = 8;
+  tourSpot.classList.remove("oculto");
+  tourSpot.style.left   = (r.left - pad) + "px";
+  tourSpot.style.top    = (r.top  - pad) + "px";
+  tourSpot.style.width  = (r.width  + pad * 2) + "px";
+  tourSpot.style.height = (r.height + pad * 2) + "px";
+
+  tourPop.style.transform = "none";
+  const pw = tourPop.offsetWidth, ph = tourPop.offsetHeight;
+  let left = r.left + r.width / 2 - pw / 2;
+  left = Math.max(12, Math.min(left, window.innerWidth - pw - 12));
+  let top = r.bottom + 16;
+  if (top + ph > window.innerHeight - 12) top = r.top - ph - 16;
+  if (top < 12) top = Math.max(12, window.innerHeight - ph - 12);
+  tourPop.style.left = left + "px";
+  tourPop.style.top  = top + "px";
+}
+
+function tourIr(i){
+  if (i >= TOUR.length){ tourFin(); return; }
+  tPaso = Math.max(0, i);
+  const s = TOUR[tPaso];
+
+  if (s.vista) mostrar(s.vista);
+  const usaSheet = s.sel && s.sel.indexOf(".sheet") === 0;
+  if (!usaSheet && !overlay.hidden) cerrarSheet();
+  if (s.antes) s.antes();
+
+  document.getElementById("tourPaso").textContent   = "Paso " + (tPaso + 1) + " de " + TOUR.length;
+  document.getElementById("tourTitulo").textContent = s.titulo;
+  document.getElementById("tourTexto").innerHTML    = s.texto;
+  document.getElementById("tourDots").innerHTML =
+    TOUR.map((_, k) => `<i class="${k === tPaso ? "on" : ""}"></i>`).join("");
+  document.getElementById("tourAtras").hidden = tPaso === 0;
+  document.getElementById("tourSig").textContent =
+    tPaso === TOUR.length - 1 ? "¡Empezar!" : "Siguiente";
+
+  colocar(s.sel, true);
+}
+
+function tourIniciar(){
+  tourActivo = true;
+  tourEl.hidden = false;
+  tourIr(0);
+}
+function tourFin(){
+  tourActivo = false;
+  tourEl.hidden = true;
+  if (!overlay.hidden) cerrarSheet();
+  save(K_TOUR, true);
+}
+
+document.getElementById("verTutorial").addEventListener("click", tourIniciar);
+document.getElementById("tourSig").addEventListener("click", () => tourIr(tPaso + 1));
+document.getElementById("tourAtras").addEventListener("click", () => tourIr(tPaso - 1));
+document.getElementById("tourSaltar").addEventListener("click", tourFin);
+document.addEventListener("keydown", e => {
+  if (!tourActivo) return;
+  if (e.key === "Escape") tourFin();
+  if (e.key === "ArrowRight") tourIr(tPaso + 1);
+  if (e.key === "ArrowLeft" && tPaso > 0) tourIr(tPaso - 1);
+});
+const recolocar = () => { if (tourActivo) colocar(TOUR[tPaso].sel, false); };
+window.addEventListener("resize", recolocar);
+window.addEventListener("scroll", recolocar, true);
+
+/* =========================================================
+   Init
+   ========================================================= */
+storageOK = probarStorage();
+renderMapa();
+renderHorario();
+mostrar(load(K_TAB, "mapa"));
+marcarEstadoGuardado();
+
+/* La primera vez que abres la página, el tutorial arranca solo. */
+if (!load(K_TOUR, false)) setTimeout(tourIniciar, 500);
+</script>
+</body>
+</html>
